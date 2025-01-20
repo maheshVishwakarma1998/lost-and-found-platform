@@ -1,0 +1,35 @@
+type ClaimItemPayload = record { finder : principal; item_id : nat64 };
+type ClaimRewardPayload = record { reward_id : nat64; finder : principal };
+type Item = record {
+  id : nat64;
+  status : ItemStatus;
+  nft_proof : text;
+  owner : principal;
+  name : text;
+  description : text;
+  timestamp : nat64;
+  location_last_seen : Location;
+};
+type ItemStatus = variant { Lost; Found; Recovered };
+type Location = record { latitude : float64; longitude : float64 };
+type ReportItemPayload = record {
+  nft_proof : text;
+  name : text;
+  description : text;
+  location_last_seen : Location;
+};
+type Result = variant { Ok : Item; Err : text };
+type Result_1 = variant { Ok : Reward; Err : text };
+type Reward = record {
+  id : nat64;
+  status : RewardStatus;
+  finder : opt principal;
+  amount : float64;
+  item_id : nat64;
+};
+type RewardStatus = variant { Distributed; Available; Claimed };
+service : {
+  claim_item : (ClaimItemPayload) -> (Result);
+  claim_reward : (ClaimRewardPayload) -> (Result_1);
+  report_item : (ReportItemPayload) -> (Item);
+}
